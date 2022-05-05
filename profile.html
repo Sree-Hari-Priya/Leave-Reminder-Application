@@ -1,172 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Leave Reminder Application</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+</head>
 <body>
+	
+	
+		<div class="main-container">
 
-    <div class="main-container">
+			<!-- HEADER -->
+			<header class="block">
+				<ul class="header-menu horizontal-list">
+					
+					<li>
+						<a class="header-menu-tab" href="#2"><span class="icon fontawesome-user scnd-font-color"></span>Account</a>
+					</li>
+				</ul>
+				<div class="profile-menu">
+                    <br>
+                    <button id="signout_button" class="signoutbutton">Signout</button>	
+					<!--<div class="profile-picture small-profile-picture">
+						<img id="profile-pic-small" width="40px" alt=" picture" >
+					</div>-->
+				</div>
+			</header>
+	
+			<!-- LEFT-CONTAINER -->
+			<div class="left-container container">
+				<div class="menu-box block">
+					<!-- MENU BOX (LEFT-CONTAINER) -->
+					<h2 class="titular">UPCOMING LEAVES</h2>
+					<ul class="menu-box-menu" id="upcoming-leaves">
+						
+					</ul>
+				</div>
+			</div>
+	
+			<!-- MIDDLE-CONTAINER -->
+			<div class="middle-container container">
+				<div class="profile block">
+					<!-- PROFILE (MIDDLE-CONTAINER) -->
+					<br><br>
+					<div class="profile-picture big-profile-picture clear">
+						<img id="profile-pic" width="150px" alt="picture">
+					</div>
+					<h1 class="user-name"></h1>
+					<!--<div class="profile-description">
+						<p class="scnd-font-color" id="email"></p>
+					</div>-->
+                    <!--<ul class="profile-options horizontal-list">
+                        <li><a class="comments" href="#40"><p><span class="icon fontawesome-comment-alt scnd-font-color"></span>23</li></p></a>
+                        <li><a class="views" href="#41"><p><span class="icon fontawesome-eye-open scnd-font-color"></span>841</li></p></a>
+                    </ul>-->
+                    <ul class="os-percentages horizontal-list">
+                        <li>
+                            <p class="ios os scnd-font-color">Total Leaves</p>
+                            <p class="os-percentage">36</p>
+                        </li>
+                        <li>
+                            <p class="mac os scnd-font-color">Leaves Remaining</p>
+                            <p class="os-percentage">12</p>
+                        </li>
+                    </ul>
+				</div>
+                
+                
+			</div>
+	
+			<!-- RIGHT-CONTAINER -->
+			<div class="right-container container">
+                <div class="profile block"> <!-- JOIN NEWSLETTER (RIGHT-CONTAINER) -->
+                    <h2 class="titular">SCHEDULE A LEAVE</h2>
+                    <div class="input-container">
+                        
+                        
+                        <input type="text"  placeholder="Enter Leave description"  id="leave_summary">
+                        <input type="date" id="schedule">
+                        
+                    </div>
+                    <button class="subscribe button" id="schedule_button">SCHEDULE</button>
+                </div>
+			<!-- end right-container -->
+		</div>	
+		
+			
+	
+	<script type="text/javascript">
+		// Client ID and API key from the Developer Console
+		var CLIENT_ID = '265778903187-vreqdsh42oclvtt7t5p5828dn4murnm5.apps.googleusercontent.com';
+		var API_KEY = 'AIzaSyC9ftA5r--DPlg-s00XnCi1sDsejVSsZCM';
+  
+		// Array of API discovery doc URLs for APIs used by the quickstart
+		var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+  
+		// Authorization scopes required by the API; multiple scopes can be
+		// included, separated by spaces.
+		var SCOPES = "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.profile";
+  
+		var signoutButton = document.getElementById('signout_button');
+		var scheduleButton = document.getElementById('schedule_button');
+  
+		/**
+		 *  On load, called to load the auth2 library and API client library.
+		 */
+		function handleClientLoad() {
+		  gapi.load('client:auth2', initClient);
+		}
+  
+		/**
+		 *  Initializes the API client library and sets up sign-in state
+		 *  listeners.
+		 */
+		function initClient() {
+		  gapi.client.init({
+			apiKey: API_KEY,
+			clientId: CLIENT_ID,
+			discoveryDocs: DISCOVERY_DOCS,
+			scope: SCOPES
+		  }).then(function () {
+			// Listen for sign-in state changes.
+			gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+  
+			// Handle the initial sign-in state.
+			updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+			signoutButton.onclick = handleSignoutClick;
+			scheduleButton.onclick = handleScheduleClick;
+		  }, function(error) {
+			appendPre(JSON.stringify(error, null, 2));
+		  });
+		}
+  
+		/**
+		 *  Called when the signed in status changes, to update the UI
+		 *  appropriately. After a sign-in, the API is called.
+		 */
+		function updateSigninStatus(isSignedIn) {
+		  if (isSignedIn) {
+			listUpcomingEvents();
+			listProfileDetails();
+			
+		  } else {
+			location.href = "/index.html";
+		  }
+		}
 
-        <!-- HEADER -->
-        <header class="block">
-            <ul class="header-menu horizontal-list">
-                <li>
-                    <a class="header-menu-tab" href="#1"><span class="icon entypo-cog scnd-font-color"></span>Settings</a>
-                </li>
-                <li>
-                    <a class="header-menu-tab" href="#2"><span class="icon fontawesome-user scnd-font-color"></span>Account</a>
-                </li>
-                <li>
-                    <a class="header-menu-tab" href="#3"><span class="icon fontawesome-envelope scnd-font-color"></span>Messages</a>
-                    <a class="header-menu-number" href="#4">5</a>
-                </li>
-                <li>
-                    <a class="header-menu-tab" href="#5"><span class="icon fontawesome-star-empty scnd-font-color"></span>Favorites</a>
-                </li>
-            </ul>
-            <div class="profile-menu">
-                <p>Me <a href="#26"><span class="entypo-down-open scnd-font-color"></span></a></p>
-                <div class="profile-picture small-profile-picture">
-                    <img width="40px" alt="Anne Hathaway picture" src="C:\Users\Sree\Desktop\profileIMG.jfif">
-                </div>
-            </div>
-        </header>
+		function listProfileDetails(){
+			var profile = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile()
+			document.getElementsByClassName("user-name")[0].innerHTML= profile.getName();
+			document.getElementById('profile-pic').src = profile.getImageUrl();
+			//document.getElementById('profile-pic-small').src = profile.getImageUrl();
+			//console.log('URLL '+ profile.getImageUrl());
+			//document.getElementById('email').innerHTML= 'Email id: '+ profile.getEmail();
+		}
+  
+	
+  
+		/**
+		 *  Sign out the user upon button click.
+		 */
+		function handleSignoutClick(event) {
+			console.log('Signout clicked')
+		  gapi.auth2.getAuthInstance().signOut();
+		  location.href = "/index.html";
+		}
 
-        <!-- LEFT-CONTAINER -->
-        <div class="left-container container">
-            <div class="menu-box block">
-                <!-- MENU BOX (LEFT-CONTAINER) -->
-                <h2 class="titular">MENU BOX</h2>
-                <ul class="menu-box-menu">
-                    <li>
-                        <a class="menu-box-tab" href="#6"><span class="icon fontawesome-envelope scnd-font-color"></span>Notifications<div class="menu-box-number">24</div></a>
-                    </li>
-                    <li>
-                        <a class="menu-box-tab" href="#8"><span class="icon entypo-paper-plane scnd-font-color"></span>Notes<div class="menu-box-number">3</div></a>
-                    </li>
-                    <li>
-                        <a class="menu-box-tab" href="#10"><span class="icon entypo-calendar scnd-font-color"></span>Leaves<div class="menu-box-number">5</div></a>
-                    </li>
-                    <li>
-                        <a class="menu-box-tab" href="#12"><span class="icon entypo-cog scnd-font-color"></span>Settings</a>
-                    </li>
-                    <li>
-                        <a class="menu-box-tab" href="#13">
-                            <sapn class="icon entypo-chart-line scnd-font-color"></sapn>Statistics</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+		function handleScheduleClick(event) {
+			console.log('Schedule clicked');
 
-        <!-- MIDDLE-CONTAINER -->
-        <div class="middle-container container">
-            <div class="profile block">
-                <!-- PROFILE (MIDDLE-CONTAINER) -->
-                <a class="add-button" href="#28"><span class="icon entypo-plus scnd-font-color"></span></a>
-                <div class="profile-picture big-profile-picture clear">
-                    <img width="150px" alt="Anne Hathaway picture" src="C:\Users\Sree\Desktop\profileIMG.jfif">
-                </div>
-                <h1 class="user-name">Anne Hathaway</h1>
-                <div class="profile-description">
-                    <p class="scnd-font-color">Hey! you currently have 2 leaves remaining</p>
-                </div>
-            </div>
-        </div>
+			if(document.getElementById('schedule').value){
+			var selectedDate = new Date(document.getElementById('schedule').value);
+            var leaveDesc = document.getElementById('leave_summary').value;
+			console.log('selectedDate' +selectedDate.toString());
 
-        <!-- RIGHT-CONTAINER -->
-        <div class="right-container container">
-            <!-- <div class="calendar-day block"> -->
-            <!-- CALENDAR DAY (RIGHT-CONTAINER) -->
-            <!-- <div class="arrow-btn-container">
-                    <a class="arrow-btn left" href="#200"><span class="icon fontawesome-angle-left"></span></a>
-                    <h2 class="titular">WEDNESDAY</h2>
-                    <a class="arrow-btn right" href="#201"><span class="icon fontawesome-angle-right"></span></a>
-                </div>
-                <p class="the-day">26</p>
-                <a class="add-event button" href="#27">ADD EVENT</a>
-            </div> -->
-            <div class="calendar-month block">
-                <!-- CALENDAR MONTH (RIGHT-CONTAINER) -->
-                <div class="arrow-btn-container">
-                    <a class="arrow-btn left" href="#202"><span class="icon fontawesome-angle-left"></span></a>
-                    <h2 class="titular">APRIL 2013</h2>
-                    <a class="arrow-btn right" href="#203"><span class="icon fontawesome-angle-right"></span></a>
-                </div>
-                <table class="calendar">
-                    <thead class="days-week">
-                        <tr>
-                            <th>S</th>
-                            <th>M</th>
-                            <th>T</th>
-                            <th>W</th>
-                            <th>R</th>
-                            <th>F</th>
-                            <th>S</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><a class="scnd-font-color" href="#100">1</a></td>
-                        </tr>
-                        <tr>
-                            <td><a class="scnd-font-color" href="#101">2</a></td>
-                            <td><a class="scnd-font-color" href="#102">3</a></td>
-                            <td><a class="scnd-font-color" href="#103">4</a></td>
-                            <td><a class="scnd-font-color" href="#104">5</a></td>
-                            <td><a class="scnd-font-color" href="#105">6</a></td>
-                            <td><a class="scnd-font-color" href="#106">7</a></td>
-                            <td><a class="scnd-font-color" href="#107">8</a></td>
-                        </tr>
-                        <tr>
-                            <td><a class="scnd-font-color" href="#108">9</a></td>
-                            <td><a class="scnd-font-color" href="#109">10</a></td>
-                            <td><a class="scnd-font-color" href="#110">11</a></td>
-                            <td><a class="scnd-font-color" href="#111">12</a></td>
-                            <td><a class="scnd-font-color" href="#112">13</a></td>
-                            <td><a class="scnd-font-color" href="#113">14</a></td>
-                            <td><a class="scnd-font-color" href="#114">15</a></td>
-                        </tr>
-                        <tr>
-                            <td><a class="scnd-font-color" href="#115">16</a></td>
-                            <td><a class="scnd-font-color" href="#116">17</a></td>
-                            <td><a class="scnd-font-color" href="#117">18</a></td>
-                            <td><a class="scnd-font-color" href="#118">19</a></td>
-                            <td><a class="scnd-font-color" href="#119">20</a></td>
-                            <td><a class="scnd-font-color" href="#120">21</a></td>
-                            <td><a class="scnd-font-color" href="#121">22</a></td>
-                        </tr>
-                        <tr>
-                            <td><a class="scnd-font-color" href="#122">23</a></td>
-                            <td><a class="scnd-font-color" href="#123">24</a></td>
-                            <td><a class="scnd-font-color" href="#124">25</a></td>
-                            <td><a class="today" href="#125">26</a></td>
-                            <td><a href="#126">27</a></td>
-                            <td><a href="#127">28</a></td>
-                            <td><a href="#128">29</a></td>
-                        </tr>
-                        <tr>
-                            <td><a href="#129">30</a></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- end calendar-month block -->
-        </div>
-        <!-- end right-container -->
-    </div>
-    <!-- end main-container -->
+			
+
+		var event = {
+		'summary': 'Leave',
+		'description': leaveDesc,
+		'start': {
+			'dateTime': selectedDate.toISOString(),
+			'timeZone': 'America/New_York'
+		},
+		'end': {
+			'dateTime': selectedDate.toISOString(),
+			'timeZone': 'America/New_York'
+		}
+		};
+
+		var request = gapi.client.calendar.events.insert({
+		'calendarId': 'primary',
+		'resource': event
+		});
+
+		request.execute(function(event) {
+		console.log('Event created: ' + event.htmlLink);
+        window.location.reload();
+
+		});
+
+	}else{
+		appendPre('Please select a date')
+	}
+		}
+  
+		/**
+		 * Append a pre element to the body containing the given message
+		 * as its text node. Used to display the results of the API call.
+		 *
+		 * @param {string} message Text to be placed in pre element.
+		 */
+		function appendPre(message) {
+		  var pre = document.getElementById('content');
+		  var textContent = document.createTextNode(message + '\n');
+		  pre.appendChild(textContent);
+		}
+  
+		/**
+		 * Print the summary and start datetime/date of the next ten events in
+		 * the authorized user's calendar. If no events are found an
+		 * appropriate message is printed.
+		 */
+		function listUpcomingEvents() {
+
+
+			var date = new Date();
+			var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+			var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+			console.log(firstDay+':'+lastDay)
+		  gapi.client.calendar.events.list({
+			'calendarId': 'primary',
+			'timeMin': firstDay.toISOString(),
+			'timeMax': lastDay.toISOString(),
+			'q': 'Leave',
+			'showDeleted': false,
+			'singleEvents': true,
+			'orderBy': 'startTime'
+		  }).then(function(response) {
+			var events = response.result.items;
+            var ul = document.getElementById("upcoming-leaves");
+  
+			if (events.length > 0) {
+				
+			  for (i = 0; i <events.length; i++) {
+				var event = events[i];
+				var when = event.start.dateTime;
+               // console.log(when.toDateString())
+                console.log(when)
+			
+				//appendPre(event.summary + ' (' + when + ')')
+				var li = document.createElement("li");//.innerHTML='<a class="menu-box-tab" href="#10"><span class="icon entypo-calendar scnd-font-color"></span>Leaves</a>';
+				var span = document.createElement("span")
+				span.setAttribute('class','icon entypo-calendar scnd-font-color');
+				var link = document.createElement("a");
+				link.setAttribute('class', 'menu-box-tab')
+				link.setAttribute('href', event.htmlLink)
+                link.setAttribute('target', "_blank" )
+                link.setAttribute('rel',"noopener noreferrer")
+				var para = document.createElement("span");
+				para.innerHTML=event.description + ' '+ when.split('T')[0];
+				// link.innerHTML='test';
+				link.appendChild(span);
+				link.appendChild(para);
+				
+				li.appendChild(link);
+  				//li.appendChild(document.createTextNode(event.summary + ' (' + when + ')'));
+  				ul.appendChild(li);
+				//appendPre('Number of leaves scheduled: '+ events.length);
+			  }
+			} else {
+                var li = document.createElement("li");//.innerHTML='<a class="menu-box-tab" href="#10"><span class="icon entypo-calendar scnd-font-color"></span>Leaves</a>';
+				var span = document.createElement("span")
+				span.setAttribute('class','icon entypo-calendar scnd-font-color');
+				var link = document.createElement("a");
+				link.setAttribute('class', 'menu-box-tab')
+			
+				var para = document.createElement("span");
+				para.innerHTML='No upcoming leaves found. Please schedule a leave';
+				// link.innerHTML='test';
+				link.appendChild(span);
+				link.appendChild(para);
+				
+				li.appendChild(link);
+  				//li.appendChild(document.createTextNode(event.summary + ' (' + when + ')'));
+  				ul.appendChild(li);
+			
+			}
+		  });
+		}
+
+		
+
+  
+	  </script>
+  
+	  <script async defer src="https://apis.google.com/js/api.js"
+		onload="this.onload=function(){};handleClientLoad()"
+		onreadystatechange="if (this.readyState === 'complete') this.onload()">
+	  </script>
+
 </body>
-
-
 <style>
-    /** Inspired by: http://graphicburger.com/flat-design-ui-components/ **/
+	    /** Inspired by: http://graphicburger.com/flat-design-ui-components/ **/
     /** Line-chart and donut-chart made by @kseso https://codepen.io/Kseso/pen/phiyL **/
     /************************************ FONTS ************************************/
     
@@ -210,24 +347,8 @@
         -moz-osx-font-smoothing: grayscale;
     }
     
-    .icon-cloudy:before {
-        content: "\e60f";
-    }
-    
-    .icon-sun:before {
-        content: "\e610";
-    }
-    
-    .icon-cloudy2:before {
-        content: "\e611";
-    }
     /************************************* END FONTS *************************************/
     
-    * {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-    }
     
     body {
         background: #1f253d;
@@ -272,58 +393,6 @@
         color: #9099b7;
     }
     
-    .input-container {
-        position: relative;
-    }
-    
-    input[type=text] {
-        width: 260px;
-        height: 50px;
-        margin-left: 20px;
-        margin-bottom: 20px;
-        padding-left: 45px;
-        background: #50597b;
-        color: #fff;
-        border: solid 1px #1f253d;
-        border-radius: 5px;
-    }
-    
-    input[type=text]::-webkit-input-placeholder {
-        /* WebKit browsers */
-        color: #fff;
-    }
-    
-    input[type=text]:-moz-input-placeholder {
-        /* Mozilla Firefox 4 to 18 */
-        color: #fff;
-    }
-    
-    input[type=text]::-moz-input-placeholder {
-        /* Mozilla Firefox 19+ */
-        color: #fff;
-    }
-    
-    input[type=text]:-ms-input-placeholder {
-        /* Internet Explorer 10+ */
-        color: #fff;
-    }
-    
-    input[type=text]:focus {
-        outline: none;
-        /* removes the default orange border when focus */
-        border: 1px solid #11a8ab;
-    }
-    
-    .input-icon {
-        font-size: 22px;
-        position: absolute;
-        left: 31px;
-        top: 10px;
-    }
-    
-    .input-icon.password-icon {
-        left: 35px;
-    }
     
     .horizontal-list {
         margin: 0;
@@ -358,57 +427,32 @@
         line-height: 50px;
         font-size: 16px;
         font-weight: 700;
+        color: white;
         text-align: center;
         margin: 0 auto;
         border-radius: 5px;
         -webkit-transition: background .3s;
         transition: background .3s;
+        cursor: pointer;
     }
     
-    .button:hover {
-        text-decoration: none;
-    }
-    
-    .arrow-btn-container {
-        position: relative;
-    }
-    
-    .arrow-btn {
-        position: absolute;
+    .signoutbutton {
         display: block;
-        width: 60px;
-        height: 60px;
+        width: 100px;
+        line-height: 30px;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+        margin: 0 auto;
+        border-radius: 5px;
         -webkit-transition: background .3s;
         transition: background .3s;
+        cursor: pointer;
     }
-    
-    .arrow-btn:hover {
+
+
+    .button:hover {
         text-decoration: none;
-    }
-    
-    .arrow-btn.left {
-        border-top-left-radius: 5px;
-    }
-    
-    .arrow-btn.right {
-        border-top-right-radius: 5px;
-        right: 0;
-        top: 0;
-    }
-    
-    .arrow-btn .icon {
-        display: block;
-        font-size: 18px;
-        border: 2px solid #fff;
-        border-radius: 100%;
-        line-height: 17px;
-        width: 21px;
-        margin: 20px auto;
-        text-align: center;
-    }
-    
-    .arrow-btn.left .icon {
-        padding-right: 2px;
     }
     
     .profile-picture {
@@ -436,7 +480,6 @@
     .main-container {
         font-family: 'Ubuntu', sans-serif;
         width: 950px;
-        height: 1725px;
         margin: 6em auto;
     }
     /*********************************************** HEADER ***********************************************/
@@ -537,6 +580,7 @@
     
     .menu-box {
         height: 360px;
+        overflow-y: scroll;
     }
     
     .menu-box .titular {
@@ -577,470 +621,6 @@
         transition: background .2s;
     }
     
-    .menu-box-tab:hover {
-        background: #50597b;
-        border-top: 1px solid #1f253d;
-        text-decoration: none;
-    }
-    
-    .menu-box-tab:hover .icon {
-        color: #fff;
-    }
-    
-    .menu-box-tab:hover .menu-box-number {
-        background: #e64c65;
-    }
-    
-    .donut-chart-block {
-        height: 434px;
-    }
-    
-    .donut-chart-block .titular {
-        padding: 10px 0;
-    }
-    
-    .donut-chart {
-        height: 270px;
-    }
-    /******************************************
-				DONUT-CHART by @kseso https://codepen.io/Kseso/pen/phiyL
-				******************************************/
-    
-    .donut-chart {
-        position: relative;
-        width: 200px;
-        height: 200px;
-        margin: 0 auto 2rem;
-        border-radius: 100%
-    }
-    
-    p.center-date {
-        background: #394264;
-        position: absolute;
-        text-align: center;
-        font-size: 28px;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        width: 130px;
-        height: 130px;
-        margin: auto;
-        border-radius: 50%;
-        line-height: 35px;
-        padding: 15% 0 0;
-    }
-    
-    .center-date span.scnd-font-color {
-        line-height: 0;
-    }
-    
-    .recorte {
-        border-radius: 50%;
-        clip: rect(0px, 200px, 200px, 100px);
-        height: 100%;
-        position: absolute;
-        width: 100%;
-    }
-    
-    .quesito {
-        border-radius: 50%;
-        clip: rect(0px, 100px, 200px, 0px);
-        height: 100%;
-        position: absolute;
-        width: 100%;
-        font-family: monospace;
-        font-size: 1.5rem;
-    }
-    
-    #porcion1 {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-    }
-    
-    #porcion1 .quesito {
-        background-color: #E64C65;
-        -webkit-transform: rotate(76deg);
-        transform: rotate(76deg);
-    }
-    
-    #porcion2 {
-        -webkit-transform: rotate(76deg);
-        transform: rotate(76deg);
-    }
-    
-    #porcion2 .quesito {
-        background-color: #11A8AB;
-        -webkit-transform: rotate(140deg);
-        transform: rotate(140deg);
-    }
-    
-    #porcion3 {
-        -webkit-transform: rotate(215deg);
-        transform: rotate(215deg);
-    }
-    
-    #porcion3 .quesito {
-        background-color: #4FC4F6;
-        -webkit-transform: rotate(113deg);
-        transform: rotate(113deg);
-    }
-    
-    #porcionFin {
-        -webkit-transform: rotate(-32deg);
-        transform: rotate(-32deg);
-    }
-    
-    #porcionFin .quesito {
-        background-color: #FCB150;
-        -webkit-transform: rotate(32deg);
-        transform: rotate(32deg);
-    }
-    /******************************************
-				END DONUT-CHART by @kseso https://codepen.io/Kseso/pen/phiyL
-				******************************************/
-    
-    .os-percentages {
-        padding-top: 36px;
-    }
-    
-    .os-percentages li {
-        width: 75px;
-        border-left: 1px solid #394264;
-        text-align: center;
-        background: #50597b;
-    }
-    
-    .os {
-        margin: 0;
-        padding: 10px 0 5px;
-        font-size: 15px;
-    }
-    
-    .os.ios {
-        border-top: 4px solid #e64c65;
-    }
-    
-    .os.mac {
-        border-top: 4px solid #11a8ab;
-    }
-    
-    .os.linux {
-        border-top: 4px solid #fcb150;
-    }
-    
-    .os.win {
-        border-top: 4px solid #4fc4f6;
-    }
-    
-    .os-percentage {
-        margin: 0;
-        padding: 0 0 15px 10px;
-        font-size: 25px;
-    }
-    
-    .line-chart-block {
-        height: 400px;
-    }
-    
-    .line-chart {
-        height: 200px;
-        background: #11a8ab;
-    }
-    /******************************************
-				LINE-CHART by @kseso https://codepen.io/Kseso/pen/phiyL
-				******************************************/
-    
-    .grafico {
-        padding: 2rem 1rem 1rem;
-        width: 100%;
-        height: 100%;
-        position: relative;
-        color: #fff;
-        font-size: 80%;
-    }
-    
-    .grafico span {
-        display: block;
-        position: absolute;
-        bottom: 3rem;
-        left: 2rem;
-        height: 0;
-        border-top: 2px solid;
-        -webkit-transform-origin: left center;
-        transform-origin: left center;
-    }
-    
-    .grafico span>span {
-        left: 100%;
-        bottom: 0;
-    }
-    
-    [data-valor='25'] {
-        width: 75px;
-        -webkit-transform: rotate(-45deg);
-        transform: rotate(-45deg);
-    }
-    
-    [data-valor='8'] {
-        width: 24px;
-        -webkit-transform: rotate(65deg);
-        transform: rotate(65deg);
-    }
-    
-    [data-valor='13'] {
-        width: 39px;
-        -webkit-transform: rotate(-45deg);
-        transform: rotate(-45deg);
-    }
-    
-    [data-valor='5'] {
-        width: 15px;
-        -webkit-transform: rotate(50deg);
-        transform: rotate(50deg);
-    }
-    
-    [data-valor='23'] {
-        width: 69px;
-        -webkit-transform: rotate(-70deg);
-        transform: rotate(-70deg);
-    }
-    
-    [data-valor='12'] {
-        width: 36px;
-        -webkit-transform: rotate(75deg);
-        transform: rotate(75deg);
-    }
-    
-    [data-valor='15'] {
-        width: 45px;
-        -webkit-transform: rotate(-45deg);
-        transform: rotate(-45deg);
-    }
-    
-    [data-valor]:before {
-        content: '';
-        position: absolute;
-        display: block;
-        right: -4px;
-        bottom: -3px;
-        padding: 4px;
-        background: #fff;
-        border-radius: 50%;
-    }
-    
-    [data-valor='23']:after {
-        content: '+' attr(data-valor) '%';
-        position: absolute;
-        right: -2.7rem;
-        top: -1.7rem;
-        padding: .3rem .5rem;
-        background: #50597B;
-        border-radius: .5rem;
-        -webkit-transform: rotate(45deg);
-        transform: rotate(45deg);
-    }
-    
-    [class^='eje-'] {
-        position: absolute;
-        left: 0;
-        bottom: 0rem;
-        width: 100%;
-        padding: 1rem 1rem 0 2rem;
-        height: 80%;
-    }
-    
-    .eje-x {
-        height: 2.5rem;
-    }
-    
-    .eje-y li {
-        height: 25%;
-        border-top: 1px solid #777;
-    }
-    
-    [data-ejeY]:before {
-        content: attr(data-ejeY);
-        display: inline-block;
-        width: 2rem;
-        text-align: right;
-        line-height: 0;
-        position: relative;
-        left: -2.5rem;
-        top: -.5rem;
-    }
-    
-    .eje-x li {
-        width: 33%;
-        float: left;
-        text-align: center;
-    }
-    /******************************************
-				END LINE-CHART by @kseso https://codepen.io/Kseso/pen/phiyL
-				******************************************/
-    
-    .time-lenght {
-        padding-top: 22px;
-        padding-left: 38px;
-    }
-    
-    .time-lenght-btn {
-        display: block;
-        width: 70px;
-        line-height: 32px;
-        background: #50597b;
-        border-radius: 5px;
-        font-size: 14px;
-        text-align: center;
-        margin-right: 5px;
-        -webkit-transition: background .3s;
-        transition: background .3s;
-    }
-    
-    .time-lenght-btn:hover {
-        text-decoration: none;
-        background: #e64c65;
-    }
-    
-    .month-data {
-        padding-top: 28px;
-    }
-    
-    .month-data p {
-        display: inline-block;
-        margin: 0;
-        padding: 0 25px 15px;
-        font-size: 16px;
-    }
-    
-    .month-data p:last-child {
-        padding: 0 25px;
-        float: right;
-        font-size: 15px;
-    }
-    
-    .increment {
-        color: #e64c65;
-    }
-    
-    .media {
-        height: 216px;
-    }
-    
-    #media-display {
-        position: relative;
-        height: 180px;
-        background: #787878 url('https://www.fancinema.com.ar/wp-content/uploads/catwoman1.jpg') center top;
-    }
-    
-    #media-display .play {
-        position: absolute;
-        top: 75px;
-        right: 32px;
-        border: 2px solid #fff;
-        border-radius: 100%;
-        padding: 2px 5px 2px 9px;
-    }
-    
-    #media-display .play:hover {
-        border: 2px solid #e64c65;
-    }
-    
-    .media-control-bar {
-        padding: 6px 0 0 15px;
-    }
-    
-    .media-btn,
-    .time-passed {
-        display: inline-block;
-        margin: 0;
-    }
-    
-    .media-btn {
-        font-size: 19px;
-    }
-    
-    .media-btn:hover,
-    .media-btn:hover span {
-        text-decoration: none;
-        color: #e64c65;
-    }
-    
-    .play {
-        margin-right: 100px
-    }
-    
-    .volume {
-        margin-left: 30px;
-    }
-    
-    .resize {
-        margin-left: 12px;
-    }
-    
-    .left-container .social {
-        height: 110px;
-    }
-    
-    .left-container .social li {
-        width: 75px;
-        height: 110px;
-    }
-    
-    .left-container .social li .icon {
-        text-align: center;
-        font-size: 20px;
-        margin: 0;
-        line-height: 75px;
-    }
-    
-    .left-container .social li .number {
-        text-align: center;
-        margin: 0;
-        line-height: 34px;
-    }
-    
-    .left-container .social .facebook {
-        background: #3468af;
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-    }
-    
-    .left-container .social .facebook .number {
-        background: #1a4e95;
-        border-bottom-left-radius: 5px;
-    }
-    
-    .left-container .social .twitter {
-        background: #4fc4f6;
-    }
-    
-    .left-container .social .twitter .icon {
-        font-size: 18px;
-    }
-    
-    .left-container .social .twitter .number {
-        background: #35aadc;
-    }
-    
-    .left-container .social .googleplus {
-        background: #e64c65;
-    }
-    
-    .left-container .social .googleplus .number {
-        background: #cc324b;
-    }
-    
-    .left-container .social .mailbox {
-        background: #50597b;
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
-    
-    .left-container .social .mailbox .number {
-        background: #363f61;
-        border-bottom-right-radius: 5px;
-    }
     /************************************************** MIDDLE CONTAINER **********************************/
     
     .middle-container {
@@ -1078,431 +658,112 @@
         text-align: center;
     }
     
-    .profile-options {
-        padding-top: 23px;
-    }
     
-    .profile-options li {
-        border-left: 1px solid #1f253d;
-    }
     
-    .profile-options p {
-        margin: 0;
-    }
-    
-    .profile-options a {
-        display: block;
-        width: 99px;
-        line-height: 60px;
-        text-align: center;
-        -webkit-transition: background .3s;
-        transition: background .3s;
-    }
-    
-    .profile-options a:hover {
-        text-decoration: none;
-        background: #50597b;
-    }
-    
-    .profile-options a:hover.comments .icon {
-        color: #fcb150;
-    }
-    
-    .profile-options a:hover.views .icon {
-        color: #11a8ab;
-    }
-    
-    .profile-options a:hover.likes .icon {
-        color: #e64c65;
-    }
-    
-    .profile-options .icon {
-        padding-right: 10px;
-    }
-    
-    .profile-options .comments {
-        border-top: 4px solid #fcb150;
-    }
-    
-    .profile-options .views {
-        border-top: 4px solid #11a8ab;
-    }
-    
-    .profile-options .likes {
-        border-top: 4px solid #e64c65;
-    }
-    
-    .weather {
-        height: 555px;
-    }
-    
-    .weather .titular {
-        background: #cc324b;
-    }
-    
-    .weather .titular .icon {
-        padding-right: 15px;
-        font-size: 26px;
-    }
-    
-    .weather .current-day {
-        height: 135px;
-        background: #e64c65;
-    }
-    
-    .weather .current-day p {
-        margin: 0;
-        padding-left: 50px;
-    }
-    
-    .current-day-date {
-        font-size: 16px;
-        padding-top: 16px;
-    }
-    
-    .current-day-temperature {
-        font-size: 70px;
-    }
-    
-    .current-day-temperature .icon-cloudy {
-        padding-left: 20px;
-    }
-    
-    .weather .next-days p {
-        margin: 0;
-        display: inline-block;
-        font-size: 16px;
-    }
-    
-    .weather .next-days a {
-        display: block;
-        line-height: 58px;
-        border-bottom: 1px solid #1f253d;
-        -webkit-transition: background .3s;
-        transition: background .3s;
-    }
-    
-    .weather .next-days a:hover {
-        background: #50597b;
-    }
-    
-    .weather .next-days a:hover .day {
-        color: #e64c65;
-    }
-    
-    .weather .next-days-date {
-        padding-left: 20px;
-    }
-    
-    .weather .next-days-temperature {
-        float: right;
-        padding-right: 20px;
-    }
-    
-    .weather .next-days-temperature .icon {
-        padding-left: 10px;
-    }
-    
-    .tweets {
-        height: 375px;
-    }
-    
-    .tweets .titular {
-        background: #35aadc;
-    }
-    
-    .tweets .titular .icon {
-        font-size: 18px;
-        padding-right: 20px;
-    }
-    
-    .tweet.first {
-        height: 150px;
-        border-bottom: 1px solid #1f253d;
-    }
-    
-    .tweet p:first-child {
-        margin: 0;
-        padding: 30px 30px 0;
-    }
-    
-    .tweet p:last-child {
-        margin: 0;
-        padding: 15px 30px 0;
-    }
-    
-    .tweet-link {
-        color: #4fc4f6;
-    }
-    
-    .middle-container .social {
-        height: 205px;
-        background: #1f253d;
-    }
-    
-    .middle-container .social li {
-        margin-bottom: 12px;
-    }
-    
-    .middle-container .social a {
-        line-height: 60px;
-    }
-    
-    .middle-container .social a:hover {
-        text-decoration: none;
-    }
-    
-    .middle-container .social .titular {
-        border-radius: 5px;
-    }
-    
-    .middle-container .social .facebook {
-        background: #3468af;
-        -webkit-transition: background .3s;
-        transition: background .3s;
-    }
-    
-    .middle-container .social a:hover .facebook {
-        background: #1a4e95;
-    }
-    
-    .middle-container .social a:hover .icon.facebook {
-        background: #3468af;
-    }
-    
-    .middle-container .social .twitter {
-        background: #4fc4f6;
-        -webkit-transition: background .3s;
-        transition: background .3s;
-    }
-    
-    .middle-container .social a:hover .twitter {
-        background: #35aadc;
-    }
-    
-    .middle-container .social a:hover .icon.twitter {
-        background: #4fc4f6;
-    }
-    
-    .middle-container .social .googleplus {
-        background: #e64c65;
-        -webkit-transition: background .3s;
-        transition: background .3s;
-    }
-    
-    .middle-container .social a:hover .googleplus {
-        background: #cc324b;
-    }
-    
-    .middle-container .social a:hover .icon.googleplus {
-        background: #e64c65;
-    }
-    
-    .middle-container .social .icon {
-        float: left;
-        width: 60px;
-        height: 60px;
-        text-align: center;
-        font-size: 20px;
-        border-bottom-left-radius: 5px;
-        border-top-left-radius: 5px;
-    }
-    
-    .middle-container .social .icon.facebook {
-        background: #1a4e95;
-    }
-    
-    .middle-container .social .icon.twitter {
-        background: #35aadc;
-    }
-    
-    .middle-container .social .icon.googleplus {
-        background: #cc324b;
-    }
-    /********************************************* RIGHT CONTAINER ****************************************/
-    /* .right-container {} */
+    /******************************************** RIGHT CONTAINER ****************************************/
     
     .join-newsletter {
-        height: 230px;
-    }
-    
-    .join-newsletter .titular {
-        padding-top: 10px;
-    }
-    
-    .subscribe.button {
-        background: #11a8ab;
-        margin-top: 10px;
-    }
-    
-    .subscribe.button:hover {
-        background: #0F9295;
-    }
-    
-    .account {
-        height: 390px;
-    }
-    
-    .account .titular {
-        padding: 10px 0;
-    }
-    
-    .sign-in.button {
-        background: #e64c65;
-        margin: 10px auto;
-    }
-    
-    .sign-in.button:hover {
-        background: #cc324b;
-    }
-    
-    .account p {
-        text-align: center;
-    }
-    
-    .fb-sign-in {
-        margin-top: 28px;
-        display: block;
-        line-height: 50px;
-        background: #3468af;
-        border-bottom-left-radius: 5px;
-        border-bottom-right-radius: 5px;
-        -webkit-transition: background .3s;
-        transition: background .3s;
-    }
-    
-    .fb-sign-in:hover {
-        background: #1a4e95;
-        text-decoration: none;
-    }
-    
-    .fb-sign-in .icon {
-        line-height: 20px;
-        font-size: 12px;
-        padding-right: 3px;
-    }
-    
-    .fb-border {
-        display: inline-block;
-        width: 23px;
-        line-height: 20px;
-        border: 2px solid #fff;
-        border-radius: 100%;
-        margin-right: 10px;
-    }
-    
-    .loading {
-        height: 200px;
-        padding-top: 35px;
-    }
-    
-    .loading p {
-        display: inline-block;
-        padding-left: 30px;
-        margin: 5px 0 20px;
-    }
-    
-    .loading .icon {
-        padding-right: 15px;
-    }
-    
-    .loading .percentage {
-        float: right;
-        padding: 6px 35px 0 0;
-    }
-    
-    .loading .progress-bar {
-        width: 250px;
-        height: 20px;
-        background: #50597b;
-        border-radius: 5px;
-        margin: 0 auto;
-    }
-    
-    .progress-bar.downloading {
-        background: -webkit-linear-gradient(left, #11a8ab 81%, #50597b 81%);
-        /* Chrome10+,Safari5.1+ */
-        background: -ms-linear-gradient(left, #11a8ab 81%, #50597b 81%);
-        /* IE10+ */
-        background: linear-gradient(to right, #11a8ab 81%, #50597b 81%);
-        /* W3C */
-    }
-    
-    .progress-bar.uploading {
-        background: -webkit-linear-gradient(left, #4fc4f6 43%, #50597b 43%);
-        /* Chrome10+,Safari5.1+ */
-        background: -ms-linear-gradient(left, #4fc4f6 43%, #50597b 43%);
-        /* IE10+ */
-        background: linear-gradient(to right, #4fc4f6 43%, #50597b 43%);
-        /* W3C */
-    }
-    
-    .calendar-day {
-        height: 150px;
-        background: #3468af;
-    }
-    
-    .calendar-day .titular {
-        background: #1a4e95;
-    }
-    
-    .calendar-day .arrow-btn:hover {
-        background: #16417E;
-    }
-    
-    .calendar-day .the-day {
-        margin: 0;
-        text-align: center;
-        font-size: 40px;
-    }
-    
-    .add-event.button {
-        background: #4fc4f6;
-        height: 30px;
-        font-size: 15px;
-        line-height: 35px;
-    }
-    
-    .add-event.button:hover {
-        background: #35aadc;
-    }
+				height: 230px;
+	}
+	.join-newsletter .titular {
+		padding-top: 10px;
+	}
+	.subscribe.button {
+		background: #11a8ab;
+		margin-top: 10px;
+	}
+	.subscribe.button:hover {
+			background: #0F9295;
+	}
+		
     
     .calendar-month {
         height: 360px;
     }
     
-    .calendar-month .titular {
-        background: #3468af;
-    }
+.input-container {
+	position: relative;
+}
+
+input[type=text]{
+		width: 200px ;
+		height: 50px;
+		margin-left: 20px;
+		margin-bottom: 20px;
+		padding-left: 45px;
+		background: #50597b;
+		color: #fff;
+		border: solid 1px #1f253d;
+		border-radius: 5px;		
+	}
+
+input[type=date]{
+		width: 200px ;
+		height: 50px;
+		margin-left: 20px;
+		margin-bottom: 20px;
+		padding-left: 45px;
+		background: #50597b;
+		color: #fff;
+		border: solid 1px #1f253d;
+		border-radius: 5px;		
+	}
+		input[type=text]::-webkit-input-placeholder { /* WebKit browsers */
+	   		color: #fff;	   		
+	   	}
+		input[type=text]:-moz-input-placeholder { /* Mozilla Firefox 4 to 18 */
+	   		color: #fff;	   
+	   	}
+		input[type=text]::-moz-input-placeholder { /* Mozilla Firefox 19+ */
+	   		color: #fff;
+	   	}
+		input[type=text]:-ms-input-placeholder { /* Internet Explorer 10+ */
+	   		color: #fff;	   	
+	   	}
+	   	input[type=text]:focus {
+	   		outline: none; /* removes the default orange border when focus */
+	   		border: 1px solid #11a8ab;
+	   	}
+	.input-icon {
+		font-size: 22px;
+		position: absolute;
+		left: 31px;
+		top: 10px;
+	}
+    .os-percentages {
+					padding-top: 15px;
+				}
+        .os-percentages li {
+					width: 149px;
+					border-left: 1px solid #394264;
+					text-align: center;					
+					background: #50597b;
+				}
+					.os {
+						margin: 0;
+						padding: 10px 0 5px;
+						font-size: 15px;		
+					}
+						.os.ios {
+							border-top: 4px solid #4fc4f6;
+						}
+						.os.mac {
+							border-top: 4px solid #11a8ab;
+						}
+						.os.linux {
+							border-top: 4px solid #fcb150;
+						}
+						.os.win {
+							border-top: 4px solid #4fc4f6;
+						}
+					.os-percentage {
+						margin: 0;
+						padding: 0 0 15px 10px;
+						font-size: 25px;
+					}
+
     
-    .calendar-month .arrow-btn:hover {
-        background: #1a4e95;
-    }
     
-    .calendar {
-        margin: 22px 15px;
-        text-align: center;
-    }
     
-    .calendar a {
-        font-size: 17px;
-    }
-    
-    .calendar td,
-    .calendar th {
-        width: 40px;
-        height: 38px;
-    }
-    
-    .calendar .days-week {
-        color: #4fc4f6;
-    }
-    
-    .calendar .today {
-        display: block;
-        width: 34px;
-        line-height: 34px;
-        background: #e64c65;
-        border-radius: 100%;
-    }
 </style>
+</html>
