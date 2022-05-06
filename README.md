@@ -1,10 +1,11 @@
-# SE-Final-Project
+## Leave Reminder Application
+CS5704 Software Engineering Final Project
 
-Leave Reminder Application
+#### <ins>Description:<ins>
 
-This Application deals with users leave management .
+- This Application deals with users leave management.
 
-PROJECT GROUP MEMBERS :
+<ins>Project Group Members:<ins>
 
 1.Sree Hari Priya - GitHub(Sree-Hari-Priya)
 
