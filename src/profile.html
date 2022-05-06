@@ -12,11 +12,13 @@
 		<div class="main-container">
 
 			<!-- HEADER -->
-			<header class="block">
+			<header class="hblock">
+            
 				<ul class="header-menu horizontal-list">
 					
 					<li>
-						<a class="header-menu-tab" href="#2"><span class="icon fontawesome-user scnd-font-color"></span>Account</a>
+						<a class="header-menu-tab"><span class="icon fontawesome-user scnd-font-color"></span>Account</a>
+                        
 					</li>
 				</ul>
 				<div class="profile-menu">
@@ -27,6 +29,10 @@
 					</div>-->
 				</div>
 			</header>
+            <!-- HEADER -->
+			<div class="infoblock" id="info">
+				<p style="color: black; margin: 0px;"><span class="icon fontawesome-bell-alt scnd-font-color"></span>You do not have any leaves scheduled for this month. Please schedule a leave.</p>
+            </div>
 	
 			<!-- LEFT-CONTAINER -->
 			<div class="left-container container">
@@ -62,7 +68,7 @@
                         </li>
                         <li>
                             <p class="mac os scnd-font-color">Leaves Remaining</p>
-                            <p class="os-percentage">12</p>
+                            <p class="os-percentage" id="remaining">12</p>
                         </li>
                     </ul>
 				</div>
@@ -78,7 +84,7 @@
                         
                         
                         <input type="text"  placeholder="Enter Leave description"  id="leave_summary">
-                        <input type="date" id="schedule">
+                        <input type="date" id="schedule" >
                         
                     </div>
                     <button class="subscribe button" id="schedule_button">SCHEDULE</button>
@@ -172,6 +178,10 @@
 
 			if(document.getElementById('schedule').value){
 			var selectedDate = new Date(document.getElementById('schedule').value);
+            // var date = new Date(selectedDate)
+            selectedDate.setDate(selectedDate.getDate() + 1)
+            console.log(selectedDate)
+            
             var leaveDesc = document.getElementById('leave_summary').value;
 			console.log('selectedDate' +selectedDate.toString());
 
@@ -229,11 +239,17 @@
 			var date = new Date();
 			var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
 			var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
-			console.log(firstDay+':'+lastDay)
+            var firstDayYear = new Date(date.getFullYear(), 0, 1);
+            var lastDayYear = new Date(date.getFullYear(), 11, 31);
+
+			console.log('DATES'+firstDayYear+':'+lastDayYear)
+            var countUpcoming= 0;
+            var countMonth = 0;
+            var countYear = 0;
 		  gapi.client.calendar.events.list({
 			'calendarId': 'primary',
-			'timeMin': firstDay.toISOString(),
-			'timeMax': lastDay.toISOString(),
+			'timeMin': firstDayYear.toISOString(),
+			'timeMax': lastDayYear.toISOString(),
 			'q': 'Leave',
 			'showDeleted': false,
 			'singleEvents': true,
@@ -243,13 +259,17 @@
             var ul = document.getElementById("upcoming-leaves");
   
 			if (events.length > 0) {
-				
 			  for (i = 0; i <events.length; i++) {
+                
 				var event = events[i];
+                console.log(event.summary+': '+event.description+ event.start.dateTime);
 				var when = event.start.dateTime;
-               // console.log(when.toDateString())
-                console.log(when)
-			
+                countYear = countYear + 1;
+                if(Date.parse(when)>firstDay && Date.parse(when)<lastDay){
+                    countMonth=countMonth+1;
+                }
+                if(Date.parse(when)>date && Date.parse(when)<lastDay){
+                countUpcoming= countUpcoming+1;
 				//appendPre(event.summary + ' (' + when + ')')
 				var li = document.createElement("li");//.innerHTML='<a class="menu-box-tab" href="#10"><span class="icon entypo-calendar scnd-font-color"></span>Leaves</a>';
 				var span = document.createElement("span")
@@ -269,8 +289,17 @@
   				//li.appendChild(document.createTextNode(event.summary + ' (' + when + ')'));
   				ul.appendChild(li);
 				//appendPre('Number of leaves scheduled: '+ events.length);
+                }
 			  }
-			} else {
+			} 
+            if(countMonth ===0){
+                document.getElementById('info').style.visibility = 'visible';
+            }
+            if(countMonth ===1){
+                document.getElementById('info').style.visibility = 'visible';
+                document.getElementById('info').innerHTML='You have only one leave scheduled for this month. We suggest you to schedule another leave.';
+            }
+            if(countUpcoming===0){
                 var li = document.createElement("li");//.innerHTML='<a class="menu-box-tab" href="#10"><span class="icon entypo-calendar scnd-font-color"></span>Leaves</a>';
 				var span = document.createElement("span")
 				span.setAttribute('class','icon entypo-calendar scnd-font-color');
@@ -278,7 +307,7 @@
 				link.setAttribute('class', 'menu-box-tab')
 			
 				var para = document.createElement("span");
-				para.innerHTML='No upcoming leaves found. Please schedule a leave';
+				para.innerHTML='No upcoming leaves.';
 				// link.innerHTML='test';
 				link.appendChild(span);
 				link.appendChild(para);
@@ -286,8 +315,9 @@
 				li.appendChild(link);
   				//li.appendChild(document.createTextNode(event.summary + ' (' + when + ')'));
   				ul.appendChild(li);
-			
-			}
+
+            }
+            document.getElementById('remaining').innerHTML = 36-countYear;
 		  });
 		}
 
@@ -510,7 +540,7 @@
     
     .header-menu-tab:hover {
         background: #50597b;
-        border-bottom: 4px solid #11a8ab;
+        
         text-decoration: none;
     }
     
@@ -569,11 +599,25 @@
         float: left;
         width: 300px;
     }
-    
+    .hblock {
+        margin-bottom: 10px;
+        background: #394264;
+        border-radius: 5px;
+    }
+
     .block {
         margin-bottom: 25px;
         background: #394264;
         border-radius: 5px;
+    }
+    .infoblock {
+        margin-bottom: 10px;
+        background: #efefef;
+        border-radius: 5px;
+        height: 40px;
+        align-items: center;
+        align-content: center;
+        visibility: hidden;
     }
     /******************************************** LEFT CONTAINER *****************************************/
     /* .left-container {} */

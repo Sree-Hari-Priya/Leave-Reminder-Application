@@ -30,12 +30,12 @@ button {
 
 .container-login100 {
   width: 100%;  
-  min-height: 100vh;
+  min-height: 95vh;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  padding: 15px;
+  
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;;
@@ -44,7 +44,7 @@ button {
 
 .wrap-login100 {
   width: 680px;
-  background: #fff;
+  background: #3b4264;
   border-radius: 10px;
   position: relative;
   padding-left: 110px;
@@ -53,14 +53,21 @@ button {
   padding-bottom: 33px;
 }
 
-
+.form-title {
+  width: 100%;
+  display: block;
+  font-family: Montserrat-Medium;
+  font-size: 39px;
+  color: white;
+  text-align: center;
+}
 
 .login100-form-title {
   width: 100%;
   display: block;
   font-family: Montserrat-Medium;
   font-size: 39px;
-  color: #555555;
+  color: white;
   line-height: 1.2;
   text-align: center;
   padding-bottom: 53px;
