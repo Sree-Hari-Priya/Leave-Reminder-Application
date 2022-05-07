@@ -35,5 +35,5 @@
 5. When scheduling a leave for the next month, the leave should not be populated in the upcoming events.
 6. All the details related to the corresponding google account should be populated automatically once the sign in is successful.
   
-  
+- As this application doesn't implement any heavy javascript framework hence the unit testcases can be generalised and run along with running of the application. Client side testing is mentioned above and all the use cases working is explained.
   
