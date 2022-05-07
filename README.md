@@ -10,7 +10,11 @@ CS5704 Software Engineering Final Project
 #### 1. Running of the code and it's implementation is provided in src/README.md
   
 #### 2. Running of Test cases and examples is provided in test/README.md 
+
+#### 3. Use cases are mentioned and well documented in test/testing document
   
+ 
+ 
   
 
 
