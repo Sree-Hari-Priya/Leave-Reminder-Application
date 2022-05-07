@@ -11,13 +11,9 @@ CS5704 Software Engineering Final Project
   
 #### 2. Running of Test cases and examples is provided in test/README.md 
 
-#### 3. Use cases are mentioned and well documented in test/testing document
+#### 3. Use cases and test cases are mentioned and well documented in test/testing document
   
  
- 
-  
-
-
 <ins>Project Group Members:<ins>
 
 1.Sree Hari Priya - GitHub(Sree-Hari-Priya)
@@ -27,6 +23,15 @@ CS5704 Software Engineering Final Project
 3.Sai Asrith Atukuri - GitHub(asrith27) 
 
 4.Sindhu Vyshnavi Samala - GitHub(sindhuvyshnavisamala)
-  
+ 
+ 
+### <ins>Use cases<ins>
+ - This application has four use cases and all the use cases are running as expected. The expected and actual outcomes of these use cases are mentioned in the document in test/testing document:
+ 
+ 1. <ins>Succesful Login:<ins> First use case is the login of the portal. That is whenever a user open the website they shoudl be able to see the sign in with google button.After the button is clicked, the user should be able to login to their profile page.
+ 2. <ins>Schedule leave:<ins> A user should be able to schedule a leave without getting an error on clicking the schedule button and the scheduled leave should be available on the upcomings column on successful addition of the leave.
+ 3. <ins>Notification alert:<ins> when the current month is not scheduled with any leaves then the alert should say no leaves scheduled for the month. If one leave scheduled then it should say one more leave remaining for this month. If two leaves are scheduled then the notification should be disappeared.
+ 4. <ins>Redirect to calendar:>On successful addition of teh leave on the upcoming events coulumn. Whenever a leave is clicked it should redirect to the google calendar.
+ 
 
   
