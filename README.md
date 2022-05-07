@@ -33,5 +33,5 @@ CS5704 Software Engineering Final Project
  3. **Notification alert:** when the current month is not scheduled with any leaves then the alert should say no leaves scheduled for the month. If one leave scheduled then it should say one more leave remaining for this month. If two leaves are scheduled then the notification should be disappeared.
  4. **Redirect to calendar:** On successful addition of teh leave on the upcoming events coulumn. Whenever a leave is clicked it should redirect to the google calendar.
  
-
+- As this application doesn't have any heavy javascript code unlike other general websites unittest cases can be generalised and run along with the execution.
   
